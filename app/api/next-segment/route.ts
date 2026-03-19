@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { queueNextSegment } from '@/lib/background-worker';
+import type { ChronosSegment } from '@/lib/chronos-agent';
 
 export const runtime = 'nodejs';
 
@@ -11,7 +12,7 @@ export async function POST(req: NextRequest) {
       prompt: string;
       nextSegmentNumber: number;
       previousUrl: string;
-      previousPlan: string;
+      previousPlan: ChronosSegment | null;
     };
 
     if (!sessionId || !prompt || !nextSegmentNumber) {
@@ -23,8 +24,8 @@ export async function POST(req: NextRequest) {
       sessionId,
       prompt.trim(),
       nextSegmentNumber,
-      previousUrl,
-      previousPlan,
+      previousUrl ?? '',
+      previousPlan ?? null,
     );
 
     return NextResponse.json({ queued: true, segmentNumber: nextSegmentNumber });
