@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 interface Segment {
   segmentNumber: number;
   videoUrl: string;
-  plan: string;
+  plan: unknown;
 }
 
 interface ContinuousPlayerProps {
@@ -43,7 +43,7 @@ export default function ContinuousPlayer({
             prompt,
             nextSegmentNumber: seg.segmentNumber + 1,
             previousUrl: seg.videoUrl,
-            previousPlan: seg.plan,
+            previousPlan: seg.plan ?? null,
           }),
         });
         if (!res.ok) throw new Error('Failed to queue next segment');
@@ -66,7 +66,7 @@ export default function ContinuousPlayer({
             sessionId,
             segmentNumber: seg.segmentNumber + 1,
             previousUrl: seg.videoUrl,
-            previousPlan: seg.plan,
+            previousPlan: seg.plan ?? null,
           }),
         });
         if (!res.ok) throw new Error('Segment generation failed');
@@ -74,7 +74,7 @@ export default function ContinuousPlayer({
         const next: Segment = {
           segmentNumber: data.segmentNumber,
           videoUrl: data.videoUrl,
-          plan: data.plan,
+          plan: data.plan ?? null,
         };
         setSegments((prev) => [...prev, next]);
       } catch (e) {
